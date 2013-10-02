@@ -9,11 +9,12 @@ require("naughty")
 -- drop down animation
 require("scratch")
 require("vicious")
-require("awesompd/awesompd")
+require("borderbox")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 --beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+--beautiful.init("/home/kln/.config/awesome/themes/redhalo/theme.lua")
 beautiful.init("/home/kln/.config/awesome/themes/darkblue/theme.lua")
 --beautiful.init("/usr/share/awesome/themes/nice-and-clean/theme.lua")
 
@@ -77,89 +78,34 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 -- }}}
 
 -- {{{ Wibox
--- Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" })
 
--- Mem widget
-memwidget = awful.widget.progressbar({ layout = awful.widget.layout.horizontal.rightleft})
-memwidget:set_width(50)
-memwidget:set_height(15)
-memwidget:set_border_color("#ffffffff")
-memwidget:set_background_color("#000000ff")
-memwidget:set_color(beautiful.fg_focus)
---memwidget:set_gradient_colors({beautiful.fg_focus, beautiful.fg_center_widget, theme.fg_end_widget})
-memwidget:set_gradient_colors({beautiful.fg_focus, beautiful.fg_focus, "#ffffffff"})
-vicious.register(memwidget, vicious.widgets.mem, "$1", 13)
+-- {{{ widgets 
+require("awesompd/awesompd")
+require("widgets")
+require("calendar2")
 
--- cpu widget
-cpuwidget = awful.widget.graph({layout = awful.widget.layout.horizontal.rightleft})
-cpuwidget:set_width(50)
-cpuwidget:set_height(15)
-cpuwidget:set_border_color("#ffffffff")
-cpuwidget:set_background_color("#000000ff")
-cpuwidget:set_color(beautiful.fg_focus)
---cpuwidget:set_gradient_colors({beautiful.fg_focus, "#ffffffff", theme.fg_end_widget})
---cpuwidget:set_gradient_colors({beautiful.fg_widget, theme.fg_center_widget, theme.fg_end_widget})
-vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
-
--- net widget
-netwidget = widget({type = "textbox", name="netwidget"})
-vicious.register(netwidget, vicious.widgets.net, '<span color="'.. "#55d400" .. '">${eth0 down_kb}</span> <span color="' .. beautiful.fg_focus .. '">${eth0 up_kb}</span> kb/s', 1)
-
--- fs widget
-fswidget = widget({type = "textbox", name="fswidget"})
-vicious.register(fswidget, vicious.widgets.fs, '${/ used_gb}Gb<span color="' .. beautiful.fg_widget .. '"> /</span> ${/ size_gb}Gb ', 120)
-
--- volume widget
-volwidget = widget({type = "textbox"})
-vicious.register(volwidget, vicious.widgets.volume, " $1% ", 1, "Master")
-volwidget:buttons(awful.util.table.join(
-		awful.button({ }, 1, function() awful.util.spawn("amixer -q set Master toggle", false) end),
-		awful.button({ }, 3, function() awful.util.spawn("xterm -e alsamixer", true) end), 
-		awful.button({ }, 4, function() awful.util.spawn("amixer -q set Master 3dB+", false) end), 
-		awful.button({ }, 5, function() awful.util.spawn("amixer -q set Master 3dB-", false) end) 
-))
-
--- battery widget
---batwidget = widget({type = "textbox", name="batwidget"})
---vicious.register(batwidget, vicious.widgets.bat, "$1$2%", 61, "BAT0")
-batwidget = widget({type = "textbox", name="batwidget"})
-vicious.register(
-        batwidget,
-        vicious.widgets.bat,
-        function(widget, args)
-                if (args[2] == 10 or args[2] == 5 or args[2] == 3) and (args[1] == "-")then
-                        naughty.notify{
-                                preset = naughty.config.presets["battery"],
-        text = "I am going to die in " .. args[3] .. "seconds",
-        title = "Self destruct sequence initiated"
-                        }
-                                os.execute('spd-say "Self destruct sequence initiated"')
-                end
-                if (args[2] == 99) and (args[1] == "+") then
-                        naughty.notify{
-                                preset = naughty.config.presets["battery"],
-                                text = "Fully charged",
-                                title = "The force is strong with this one"
-                        }
-                        os.execute('spd-say "The force is strong with this one"')
-                end
-                return (args[1]..string.format('%02d', args[2]).."%") 
-        end,
-        61,
-        "BAT0")
-
-
--- mpd widget
-mpdwidget = widget({type = "textbox", name="mpdwidget"})
-vicious.register(mpdwidget,vicious.widgets.mpd,
+-- add calendar to clock widget 
+calendar2.addCalendarToWidget(widgets.textclock,  "<span color='green'>%s</span>")
+-- register mem widget
+vicious.register(widgets.memwidget, vicious.widgets.mem, "$1", 13)
+-- register cpu widget
+vicious.register(widgets.cpuwidget, vicious.widgets.cpu, "$1")
+-- register volume widget
+vicious.register(widgets.volwidget, vicious.widgets.volume, " $1% ", 1, "Master")
+-- register net widget
+vicious.register(widgets.netwidget, vicious.widgets.net, '<span color="'.. "#55d400" .. '">${eth0 down_kb}</span> <span color="' .. beautiful.fg_focus .. '">${eth0 up_kb}</span> kb/s', 1)
+-- register fs widget
+vicious.register(widgets.fswidget, vicious.widgets.fs, '${/ used_gb}Gb<span color="' .. beautiful.fg_focus .. '"> /</span> ${/ size_gb}Gb ', 120)
+-- register mpdwidget
+--[[vicious.register(mpdwidget,vicious.widgets.mpd,
 	function (widget, args)
 		if   args[1] == 'Stopped' then return ''
 		else return '<span color="green">MPD:</span> '..args[1]
 		end
 	end)
+--]]
 
--- music widget
+-- awesompd music widget
   musicwidget = awesompd:create() -- Create awesompd widget
   musicwidget.font = "Liberation Mono" -- Set widget font 
   musicwidget.scrolling = true -- If true, the text in the widget will be scrolled
@@ -208,31 +154,11 @@ vicious.register(mpdwidget,vicious.widgets.mpd,
  			         { "", "XF86AudioNext", musicwidget:command_next_track() },
  			         { "", "XF86AudioPlay", musicwidget:command_toggle() },
                { modkey, "Pause", musicwidget:command_playpause() } })
-  musicwidget:run() -- After all configuration is done, run the widget
 
-mycpuicon 				= widget({type = "imagebox", name="mycpuicon"})
-mycpuicon.image 	= image("/home/kln/.config/awesome/icons/myicons/cpu.png")
-myneticon					= widget({type = "imagebox", name="myneticon"})
-myneticon.image 	= image("/home/kln/.config/awesome/icons/myicons/net.png")
-myneticonup				= widget({type = "imagebox", name="myneticonup"})
-myneticonup.image	= image("/home/kln/.config/awesome/icons/myicons/netup.png")
-myvolicon					= widget({type = "imagebox", name="myvolicon"})
-myvolicon.image		= image("/home/kln/.config/awesome/icons/myicons/vol.png")
-myspacer					= widget({type = "textbox", name="myspacer"})
-myspacer.text			= " "
-myseparator				= widget({type = "textbox", name="myseparator"})
-myseparator.text 	= "|"
-mydiskicon 				= widget({type = "imagebox", name="mydiskicon"})
-mydiskicon.image	= image("/home/kln/.config/awesome/icons/myicons/disk.png")
-mytimeicon				= widget({type = "imagebox", name="mytimeicon"})
-mytimeicon.image	= image("/home/kln/.config/awesome/icons/myicons/date.png")
-mymemicon					= widget({type = "imagebox", name="mymemicon"})
-mymemicon.image		= image("/home/kln/.config/awesome/icons/myicons/mem.png")
-mybaticon					= widget({type = "imagebox", name="mybaticon"})
-mybaticon.image		= image("/home/kln/.config/awesome/icons/myicons/bat.png")
-mymusicicon					= widget({type = "imagebox", name="mymusicicon"})
-mymusicicon.image		= image("/home/kln/.config/awesome/icons/myicons/music.png")
+musicwidget:run() -- After all configuration is done, run the widget
 
+--}}}
+--
 -- Create a systray
 mysystray = widget({ type = "systray" })
 
@@ -302,6 +228,10 @@ for s = 1, screen.count() do
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
+    awful.screen.padding(screen[s], { top = 1 })
+
+    borderbox.borderbox(mywibox[s], s, { position = 'above' })
+
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = {
         {
@@ -311,29 +241,29 @@ for s = 1, screen.count() do
             layout = awful.widget.layout.horizontal.leftright
         },
         mylayoutbox[s],
-        mytextclock,
-				myseparator, 
+        widgets.textclock,
+				widgets.myseparator, 
         s == 1 and mysystray or nil,
-				myspacer, 
-				batwidget, 
-				mybaticon, 
-				myspacer, 
-				fswidget, 
-				mydiskicon, 
-				myspacer, 
-				myneticonup, 
-				netwidget, 
-				myneticon, 
-				myspacer, 
-				cpuwidget, 
-				mycpuicon, 
-				myspacer, 
-				memwidget, 
-				mymemicon, 
-				volwidget, 
-				myvolicon,
+				widgets.myspacer, 
+        s == 1 and {
+                widgets.fswidget, 
+				widgets.mydiskicon, 
+				widgets.myspacer, 
+				widgets.myneticonup, 
+				widgets.netwidget, 
+				widgets.myneticon, 
+				widgets.myspacer, 
+				widgets.cpuwidget, 
+				widgets.mycpuicon, 
+				widgets.myspacer, 
+                widgets.memwidget, 
+				widgets.mymemicon, 
+				widgets.volwidget, 
+				widgets.myvolicon,
 				musicwidget.widget, 
-				mymusicicon,
+				widgets.mymusicicon, 
+                layout = awful.widget.layout.horizontal.rightleft
+            }   or nil,
        mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
     }
