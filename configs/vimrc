@@ -285,6 +285,8 @@ call pathogen#helptags()
 
 set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 
+:set encoding=utf-8
+
 " Nerdtree
 autocmd VimEnter * NERDTree
 autocmd VimEnter * wincmd p
@@ -312,8 +314,7 @@ function! s:CloseIfOnlyNerdTreeLeft()
 endfunction
 
 
-
+set tags=./tags
 "set background=dark
 "colorscheme wombat
 
-:set tags=/home/kln/sandbox/Intel/android/jb/main/linux/kernel/tags
