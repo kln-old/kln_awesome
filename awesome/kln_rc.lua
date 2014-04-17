@@ -104,6 +104,31 @@ vicious.register(widgets.fswidget, vicious.widgets.fs, '${/ used_gb}Gb<span colo
 		end
 	end)
 --]]
+vicious.register(
+        widgets.batwidget,
+        vicious.widgets.bat,
+        function(widget, args)
+                if (args[2] == 10 or args[2] == 5 or args[2] == 3) and (args[1] == "-")then
+                        naughty.notify{
+                                preset = naughty.config.presets["battery"],
+        text = "I am going to die in " .. args[3] .. "seconds",
+        title = "Self destruct sequence initiated"
+                        }
+                                os.execute('spd-say "Self destruct sequence initiated"')
+                end
+                if (args[2] == 99) and (args[1] == "+") then
+                        naughty.notify{
+                                preset = naughty.config.presets["battery"],
+                                text = "Fully charged",
+                                title = "The force is strong with this one"
+                        }
+                        os.execute('spd-say "The force is strong with this one"')
+                end
+                return (args[1]..string.format('%02d', args[2]).."%") 
+        end,
+        61,
+        "BAT0")
+
 
 -- awesompd music widget
   musicwidget = awesompd:create() -- Create awesompd widget
@@ -246,6 +271,9 @@ for s = 1, screen.count() do
         s == 1 and mysystray or nil,
 				widgets.myspacer, 
         s == 1 and {
+                widgets.batwidget,
+                widgets.mybaticon,
+				widgets.myspacer,
                 widgets.fswidget, 
 				widgets.mydiskicon, 
 				widgets.myspacer, 

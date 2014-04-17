@@ -72,4 +72,9 @@ mpdwidget = widget({type = "textbox", name="mpdwidget"})
 mymusicicon					= widget({type = "imagebox", name="mymusicicon"})
 mymusicicon.image		= image("/home/kln/.config/awesome/icons/myicons/music.png")
 
-
+-- battery widget
+--batwidget = widget({type = "textbox", name="batwidget"})
+--vicious.register(batwidget, vicious.widgets.bat, "$1$2%", 61, "BAT0")
+batwidget = widget({type = "textbox", name="batwidget"})
+mybaticon                   = widget({type = "imagebox", name="mybaticon"})
+mybaticon.image     = image("/home/kln/.config/awesome/icons/myicons/bat.png")
