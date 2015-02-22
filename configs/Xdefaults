@@ -127,9 +127,10 @@ urxvt.color14: #4bb8fd
 urxvt.color15: #a020f0
 
 urxvt.transparent: true
-urxvt.shading: 25
+urxvt.shading: 10
 urxvt.fading: 50
-!urxvt.font: xft:terminus:style=roman:pixelsize=12
+!urxvt.font: xft:monaco:style=roman:pixelsize=14
+urxvt.font: xft:monaco:pixelsize=13
 urxvt.scrollBar: false
 *VT100.colorBDMode:     true
 *VT100.colorBD:         red
@@ -174,8 +175,9 @@ xterm*highlightSelection: true
 xterm*utf8: 2
 xterm*eightBitInput: true
 xterm*metaSendsEscape: true
-! xterm*font: -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859-2
-! xterm*boldFont: -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-iso8859-2
+!xterm*font: -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859-2
+!xterm*boldFont: -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-iso8859-2
+xterm*font: xft:monaco:pixelsize=13
 xterm*cursorColor: #DCDCCC
 ! Zenburn
 xterm*background: #3f3f3f
