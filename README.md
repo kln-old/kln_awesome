@@ -15,4 +15,20 @@ awesome 3.5:
 - plank - dock
 - synapse - app launcher
 - variety - automatic wallpaper changer
+- feh - image viewing & set wallpaper
+- urxvt - terminal
+- xterm - terminal
+- monaco - font
+- tmux - terminal multiplexer 
+
+configs:
+--------
+
+Xdefaults - urxvt & xterm
+    ~/.Xdefaults
+tmux.conf - tmux configuration
+    ~/.tmux.conf
+compton.conf - configuration for compositor
+    ~/.config/compton.conf
+
 
