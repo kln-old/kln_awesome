@@ -24,11 +24,16 @@ awesome 3.5:
 configs:
 --------
 
-Xdefaults - urxvt & xterm
+- Xdefaults - urxvt & xterm
     ~/.Xdefaults
-tmux.conf - tmux configuration
+- tmux.conf - tmux configuration
     ~/.tmux.conf
-compton.conf - configuration for compositor
+- compton.conf - configuration for compositor
     ~/.config/compton.conf
 
-
+Other settings:
+---------------
+- Firefox:
+    - theme - FT deep dark
+    - plugin - pentadactyl (~/.pentadactylrc)
+    - pentadactyl color scheme - molokai (~/.pentadactyl/colors/molokay.penta)
